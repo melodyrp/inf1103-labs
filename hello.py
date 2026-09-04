@@ -1,12 +1,9 @@
-print("=================================")
-print("Welcome here")
-print("My first post!")
-print("=================================")
+username = input("Enter your username: ")
+age = input("Enter Age: ")
+category = input("Enter content category: ")
 
-username = "cool_creator"
-bio = "Fun Blogger"
-followers = 100
-
+print("\nInstagram Profile")
+print("======================")
 print("Username:", username)
-print("Bio:", bio)
-print("Followers:", followers)
+print("Age:", age)
+print("Category:", category)
