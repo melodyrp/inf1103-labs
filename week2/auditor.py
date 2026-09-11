@@ -10,3 +10,17 @@ while True:
         print("Number of Failed/Rejected Entries:", failed_entries)
         print("Number of Failed/Rejected Entries:", failed_entries)
         break
+
+    # check for negative number
+    if stock_input.startswith("-"):
+        if stock_input[1:].isdigit():
+            print("Error: Negative stock quantities are not allowed.")
+            failed_entries += 1
+            continue
+
+    # check for invalid inputs
+    if not stock_input.isdigit():
+        print("Error: Invalid input. Please enter a valid stock quantity (Integer).")
+        failed_entries += 1
+        continue
+    
