@@ -23,4 +23,17 @@ while True:
         print("Error: Invalid input. Please enter a valid stock quantity (Integer).")
         failed_entries += 1
         continue
+
+    # convert input to integer
+    stock = int(stock_input)
+
+    # add stock to inventory
+    inventory += stock
+
+    print("Current inventory:", inventory)
+
+    # Check storage limit
+    if inventory > 500:
+        print("WARNING: Inventory has exceeded 500 units!!!")
+        break
     
