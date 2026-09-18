@@ -1,39 +1,45 @@
-inventory = 0
-failed_entries = 0
+max_capacity = 500
+tax_rate = 0.1 #10% tax rate
 
-while True:
+def get_valid_input():
     stock_input = input("Enter stock quantity (or 'exit' to exit): ")
 
-    #exit
+    # exit program
     if stock_input.lower() == "exit":
-        print("\n--- Inventory Report ---")
-        print("Number of Failed/Rejected Entries:", failed_entries)
-        print("Number of Failed/Rejected Entries:", failed_entries)
-        break
+        return "exit"
 
     # check for negative number
     if stock_input.startswith("-"):
         if stock_input[1:].isdigit():
             print("Error: Negative stock quantities are not allowed.")
-            failed_entries += 1
-            continue
+            return None
 
-    # check for invalid inputs
     if not stock_input.isdigit():
         print("Error: Invalid input. Please enter a valid stock quantity (Integer).")
-        failed_entries += 1
-        continue
+        return None  # check for invalid input
 
-    # convert input to integer
-    stock = int(stock_input)
+    # convert input to interger
+    value = int(stock_input)
+    return value
 
-    # add stock to inventory
-    inventory += stock
 
-    print("Current inventory:", inventory)
+def main():
+    """
+    Main function to run inventory auditor program.
+    """
 
-    # Check storage limit
-    if inventory > 500:
-        print("WARNING: Inventory has exceeded 500 units!!!")
-        break
-    
+    # local variables
+    inventory = 0
+    failed_entries = 0
+    deliveries_processed = 0
+    tax_amount = 0
+    exit_program = False
+
+    while not exit_program:
+
+        stock = get_valid_input()
+        # quit
+        if stock == "exit":
+            exit_program = True
+
+main()
