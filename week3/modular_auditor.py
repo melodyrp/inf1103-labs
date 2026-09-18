@@ -33,7 +33,7 @@ def process_delivery(current_total, new_value):
 def calculate_tax(amount):
     #Calculates 10% tax for the current delivery.
 
-    tax = amount * TAX_RATE
+    tax = amount * tax_rate
 
     return tax
 
@@ -67,6 +67,22 @@ def main():
         elif stock is None:
             failed_entries += 1
 
+        # valid delivery
+        else:
+            inventory = process_delivery(inventory, stock)
 
+            tax_amount = calculate_tax(stock)
+
+            deliveries_processed += 1
+
+            print("Current inventory:", inventory)
+            print("Tax for this delivery:", f"{tax_amount:.2f}")
+
+            # check storage limit
+            if inventory > max_capacity:
+                print("WARNING: Inventory has exceeded 500 units!!!")
+                exit_program = True
+
+    generate_report(deliveries_processed, failed_entries)
 
 main()
