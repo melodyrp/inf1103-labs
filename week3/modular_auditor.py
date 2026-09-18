@@ -20,15 +20,34 @@ def get_valid_input():
 
     # convert input to interger
     value = int(stock_input)
+
     return value
 
+def process_delivery(current_total, new_value):
+    # Adds the new delivery amount to the current inventory.
+
+    new_total = current_total + new_value
+
+    return new_total
+
+def calculate_tax(amount):
+    #Calculates 10% tax for the current delivery.
+
+    tax = amount * TAX_RATE
+
+    return tax
 
 
+def generate_report(total_units, failed_attempts):
+    #Prints the final inventory report.
+
+    print("\n--- Inventory Report ---")
+    print("Total Deliveries Processed:", total_units)
+    print("Number of Failed/Rejected Entries:", failed_attempts)
 
 def main():
-    """
-    Main function to run inventory auditor program.
-    """
+    #Main function to run inventory auditor program.
+
 
     # local variables
     inventory = 0
@@ -43,7 +62,7 @@ def main():
         # quit
         if stock == "exit":
             exit_program = True
-            
+
         # invalid / rejected entry
         elif stock is None:
             failed_entries += 1
