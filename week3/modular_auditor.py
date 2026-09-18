@@ -23,6 +23,8 @@ def get_valid_input():
     return value
 
 
+
+
 def main():
     """
     Main function to run inventory auditor program.
@@ -41,5 +43,11 @@ def main():
         # quit
         if stock == "exit":
             exit_program = True
+            
+        # invalid / rejected entry
+        elif stock is None:
+            failed_entries += 1
+
+
 
 main()
