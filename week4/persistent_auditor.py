@@ -68,6 +68,16 @@ def generate_report(total_units, failed_attempts):
     print("Total Deliveries Processed:", total_units)
     print("Number of Failed/Rejected Entries:", failed_attempts)
 
+#Added in week4
+# Saves the inventory total and transaction history into inventory.txt file
+def save_inventory(total_inventory, transaction_history):
+        with open("inventory.txt", "w") as file:
+            file.write(str(total_inventory) + "\n")
+
+            history_text = ",".join(str(value) for value in transaction_history)
+            file.write(history_text)
+
+
 def main():
     #Main function to run inventory auditor program.
 
