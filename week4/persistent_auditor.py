@@ -25,11 +25,11 @@ def load_inventory():
 
 
 def get_valid_input():
-    stock_input = input("Enter stock quantity (or 'exit' to exit): ")
+    stock_input = input("Enter stock quantity (or 'quit' to quit): ")
 
-    # exit program
-    if stock_input.lower() == "exit":
-        return "exit"
+    # quit program
+    if stock_input.lower() == "quit":
+        return "quit"
 
     # check for negative number
     if stock_input.startswith("-"):
@@ -37,11 +37,12 @@ def get_valid_input():
             print("Error: Negative stock quantities are not allowed.")
             return None
 
+    # check for invalid input
     if not stock_input.isdigit():
         print("Error: Invalid input. Please enter a valid stock quantity (Integer).")
-        return None  # check for invalid input
+        return None
 
-    # convert input to interger
+    # convert input to integer
     value = int(stock_input)
 
     return value
@@ -126,4 +127,5 @@ def main():
 
     print("Inventory saved successfully.")
 
-main()
+if __name__ == "__main__":
+    main()
