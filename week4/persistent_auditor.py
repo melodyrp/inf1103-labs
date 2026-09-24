@@ -80,42 +80,50 @@ def save_inventory(total_inventory, transaction_history):
 
 def main():
     #Main function to run inventory auditor program.
+    
+    # Load previous data
+    inventory, transaction_history = load_inventory()
 
-
-    # local variables
-    inventory = 0
+    # Local variables
     failed_entries = 0
     deliveries_processed = 0
-    tax_amount = 0
     exit_program = False
+
+    print("Loaded inventory:", inventory)
+    print("Transaction history:", transaction_history)
 
     while not exit_program:
 
         stock = get_valid_input()
-        # quit
-        if stock == "exit":
+
+        if stock == "quit":
             exit_program = True
 
-        # invalid / rejected entry
         elif stock is None:
             failed_entries += 1
 
-        # valid delivery
         else:
             inventory = process_delivery(inventory, stock)
 
             tax_amount = calculate_tax(stock)
+
+            # Add valid transaction to history list
+            transaction_history.append(stock)
 
             deliveries_processed += 1
 
             print("Current inventory:", inventory)
             print("Tax for this delivery:", f"{tax_amount:.2f}")
 
-            # check storage limit
             if inventory > max_capacity:
                 print("WARNING: Inventory has exceeded 500 units!!!")
                 exit_program = True
 
+    # Save data before program ends
+    save_inventory(inventory, transaction_history)
+
     generate_report(deliveries_processed, failed_entries)
+
+    print("Inventory saved successfully.")
 
 main()
