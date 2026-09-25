@@ -21,13 +21,10 @@ HISTORY_SEPARATOR = "|"
 
 
 def load_inventory():
-    # Load all inventory items from inventory.txt
-
     inventory = []
 
     try:
         with open(INVENTORY_FILE, "r") as file:
-
             for line in file:
                 line = line.strip()
 
@@ -58,11 +55,19 @@ def load_inventory():
                 inventory.append(item)
 
     except FileNotFoundError:
-        # Start with an empty inventory if file does not exist
-        inventory = []
+        print("inventory.txt not found. Creating a new inventory file...")
+
+        inventory = [
+            ["1001", "Wireless Mouse", 0, []],
+            ["1002", "Keyboard", 0, []],
+            ["1003", "USB Cable", 0, []]
+        ]
+
+        save_inventory(inventory)
+
+        print("New inventory.txt created.")
 
     return inventory
-
 
 def save_inventory(inventory):
     # Save all inventory items and transaction histories
