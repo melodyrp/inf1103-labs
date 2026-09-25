@@ -1,131 +1,247 @@
-max_capacity = 500
-tax_rate = 0.1 #10% tax rate
+"""
+INF1103 Week 4 - Persistent Auditor (Advanced)
+"""
+
+# Global Constants
+EXIT_SIGNAL = -99
+MAX_CAPACITY = 500
+TAX_RATE = 0.1
+INVENTORY_FILE = "inventory.txt"
+
+# Inventory item structure
+ITEM_FIELDS = {
+    "id": 0,
+    "name": 1,
+    "quantity": 2,
+    "transaction_history": 3
+}
+
+FIELD_SEPARATOR = ","
+HISTORY_SEPARATOR = "|"
+
 
 def load_inventory():
-    #Loads the current inventory from a file.
+    # Load all inventory items from inventory.txt
+
+    inventory = []
 
     try:
-        with open("inventory.txt", "r") as file:
-            lines = file.readlines()
+        with open(INVENTORY_FILE, "r") as file:
 
-            inventory = int(lines[0].strip())
+            for line in file:
+                line = line.strip()
 
-            if len(lines) > 1 and lines[1].strip():
-                transaction_history = [
-                    int(value) for value in lines[1].strip().split(",")
-                ]
-            else:
+                if not line:
+                    continue
+
+                parts = line.split(FIELD_SEPARATOR)
+
+                item_id = parts[0]
+                name = parts[1]
+                quantity = int(parts[2])
+
                 transaction_history = []
 
-            return inventory, transaction_history
+                if len(parts) > 3 and parts[3]:
+                    history_values = parts[3].split(HISTORY_SEPARATOR)
+
+                    for value in history_values:
+                        transaction_history.append(int(value))
+
+                item = [
+                    item_id,
+                    name,
+                    quantity,
+                    transaction_history
+                ]
+
+                inventory.append(item)
 
     except FileNotFoundError:
-        return 0, []
+        # Start with an empty inventory if file does not exist
+        inventory = []
+
+    return inventory
 
 
+def save_inventory(inventory):
+    # Save all inventory items and transaction histories
 
-def get_valid_input():
-    stock_input = input("Enter stock quantity (or 'quit' to quit): ")
+    with open(INVENTORY_FILE, "w") as file:
 
-    # quit program
+        for item in inventory:
+
+            history = HISTORY_SEPARATOR.join(
+                str(value)
+                for value in item[ITEM_FIELDS["transaction_history"]]
+            )
+
+            line = (
+                str(item[ITEM_FIELDS["id"]])
+                + FIELD_SEPARATOR
+                + item[ITEM_FIELDS["name"]]
+                + FIELD_SEPARATOR
+                + str(item[ITEM_FIELDS["quantity"]])
+                + FIELD_SEPARATOR
+                + history
+            )
+
+            file.write(line + "\n")
+
+
+def display_inventory(inventory):
+    # Display all current inventory items
+
+    print("\nCurrent Inventory:")
+
+    if not inventory:
+        print("No inventory items found.")
+        return
+
+    for item in inventory:
+        print(
+            item[ITEM_FIELDS["id"]],
+            item[ITEM_FIELDS["name"]],
+            item[ITEM_FIELDS["quantity"]],
+            item[ITEM_FIELDS["transaction_history"]]
+        )
+
+
+def find_item(inventory, item_id):
+    # Search inventory for matching item ID
+
+    for item in inventory:
+
+        if item[ITEM_FIELDS["id"]] == item_id:
+            return item
+
+    return None
+
+
+def get_valid_input(item):
+    # Get and validate stock quantity
+
+    stock_input = input(
+        "Enter stock quantity for "
+        + item[ITEM_FIELDS["name"]]
+        + " (or 'quit' to quit): "
+    )
+
     if stock_input.lower() == "quit":
-        return "quit"
+        return EXIT_SIGNAL
 
-    # check for negative number
+    # Check negative input
     if stock_input.startswith("-"):
         if stock_input[1:].isdigit():
             print("Error: Negative stock quantities are not allowed.")
             return None
 
-    # check for invalid input
+    # Check invalid input
     if not stock_input.isdigit():
-        print("Error: Invalid input. Please enter a valid stock quantity (Integer).")
+        print("Error: Please enter a valid integer.")
         return None
 
-    # convert input to integer
-    value = int(stock_input)
+    return int(stock_input)
 
-    return value
 
-def process_delivery(current_total, new_value):
-    # Adds the new delivery amount to the current inventory.
+def process_delivery(item, new_quantity):
+    # Update item quantity
 
-    new_total = current_total + new_value
+    item[ITEM_FIELDS["quantity"]] += new_quantity
 
-    return new_total
+    # Store transaction history
+    item[ITEM_FIELDS["transaction_history"]].append(new_quantity)
 
-def calculate_tax(amount):
-    #Calculates 10% tax for the current delivery.
+
+def calculate_tax(amount, tax_rate):
+    # Calculate tax for delivery
 
     tax = amount * tax_rate
 
     return tax
 
 
-def generate_report(total_units, failed_attempts):
-    #Prints the final inventory report.
+def display_status(item, valid_quantity, tax_amount):
+    # Display updated item information
+
+    print("\nDelivery accepted.")
+    print("Item:", item[ITEM_FIELDS["name"]])
+    print("Delivery quantity:", valid_quantity)
+    print("Current quantity:", item[ITEM_FIELDS["quantity"]])
+    print("Tax for this delivery:", f"{tax_amount:.2f}")
+
+
+def generate_report(inventory, failed_entries):
+    # Print final inventory summary
 
     print("\n--- Inventory Report ---")
-    print("Total Deliveries Processed:", total_units)
-    print("Number of Failed/Rejected Entries:", failed_attempts)
 
-#Added in week4
-# Saves the inventory total and transaction history into inventory.txt file
-def save_inventory(total_inventory, transaction_history):
-        with open("inventory.txt", "w") as file:
-            file.write(str(total_inventory) + "\n")
+    total_units = 0
 
-            history_text = ",".join(str(value) for value in transaction_history)
-            file.write(history_text)
+    for item in inventory:
+        total_units += item[ITEM_FIELDS["quantity"]]
+
+    print("Total Inventory Units:", total_units)
+    print("Number of Failed/Rejected Entries:", failed_entries)
 
 
 def main():
-    #Main function to run inventory auditor program.
-    
-    # Load previous data
-    inventory, transaction_history = load_inventory()
+    # Load inventory from file
 
-    # Local variables
+    inventory = load_inventory()
+
     failed_entries = 0
-    deliveries_processed = 0
     exit_program = False
-
-    print("Loaded inventory:", inventory)
-    print("Transaction history:", transaction_history)
 
     while not exit_program:
 
-        stock = get_valid_input()
+        # Show existing inventory
+        display_inventory(inventory)
 
-        if stock == "quit":
+        item_id = input("\nEnter Item ID (or 'quit' to quit): ")
+
+        if item_id.lower() == "quit":
+            exit_program = True
+            continue
+
+        # Find selected item
+        item = find_item(inventory, item_id)
+
+        if item is None:
+            print("Error: Item ID not found.")
+            failed_entries += 1
+            continue
+
+        # Get delivery amount
+        quantity = get_valid_input(item)
+
+        if quantity == EXIT_SIGNAL:
             exit_program = True
 
-        elif stock is None:
+        elif quantity is None:
             failed_entries += 1
 
         else:
-            inventory = process_delivery(inventory, stock)
+            # Update item
+            process_delivery(item, quantity)
 
-            tax_amount = calculate_tax(stock)
+            # Calculate tax
+            tax_amount = calculate_tax(quantity, TAX_RATE)
 
-            # Add valid transaction to history list
-            transaction_history.append(stock)
+            display_status(item, quantity, tax_amount)
 
-            deliveries_processed += 1
-
-            print("Current inventory:", inventory)
-            print("Tax for this delivery:", f"{tax_amount:.2f}")
-
-            if inventory > max_capacity:
-                print("WARNING: Inventory has exceeded 500 units!!!")
+            # Check capacity
+            if item[ITEM_FIELDS["quantity"]] > MAX_CAPACITY:
+                print("WARNING: Item quantity has exceeded 500 units!!!")
                 exit_program = True
 
-    # Save data before program ends
-    save_inventory(inventory, transaction_history)
+    # Save all data before exiting
+    save_inventory(inventory)
 
-    generate_report(deliveries_processed, failed_entries)
+    generate_report(inventory, failed_entries)
 
-    print("Inventory saved successfully.")
+    print("Inventory successfully saved to inventory.txt.")
+
 
 if __name__ == "__main__":
     main()
