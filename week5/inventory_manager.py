@@ -65,3 +65,33 @@ def update_stock(inventory, product_id, new_stock):
 
     return True
 
+def display_all(inventory):
+    # Displays all products
+
+    print("\nCurrent Inventory")
+    print("------------------------------------------------")
+
+    if len(inventory) == 0:
+        print("No products found.")
+
+    else:
+        for product in inventory:
+            print(
+                f'ID: {product["id"]} | '
+                f'Name: {product["name"]} | '
+                f'Price: ${product["price"]:.2f} | '
+                f'Stock: {product["stock"]}'
+            )
+
+    print("------------------------------------------------")
+
+
+def display_menu():
+    print("\n----------- MENU -----------")
+    print("1. Display All Products")
+    print("2. Add Product")
+    print("3. Update Stock")
+    print("4. Search Product")
+    print("5. Save Inventory")
+    print("6. Exit")
+    print("----------------------------")
