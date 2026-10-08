@@ -95,3 +95,147 @@ def display_menu():
     print("5. Save Inventory")
     print("6. Exit")
     print("----------------------------")
+
+def main():
+    """
+    Main function to run inventory manager.
+    """
+
+    inventory = []
+    exit_program = False
+
+    print("========================================")
+    print("INVENTORY MANAGEMENT SYSTEM")
+    print("========================================")
+
+    # Load inventory
+    inventory, status = load_inventory()
+
+    if status:
+        print("\ninventory.json found.")
+        print("Inventory loaded successfully.")
+    else:
+        print("\ninventory.json not found.")
+        print("Starting with empty inventory.")
+
+    # Display menu
+    display_menu()
+
+    while not exit_program:
+
+        option = input("\nEnter option: ")
+
+        # Option 1 - Display all products
+        if option == "1":
+            display_all(inventory)
+
+        # Option 2 - Add product
+        elif option == "2":
+
+            print("\nAdd New Product")
+
+            product_id = input("Product ID: ")
+            name = input("Product Name: ")
+
+            try:
+                price = float(input("Price: "))
+                stock = int(input("Stock Quantity: "))
+
+                added = add_product(
+                    inventory,
+                    product_id,
+                    name,
+                    price,
+                    stock
+                )
+
+                if added:
+                    print("\nProduct added successfully!")
+                else:
+                    print("\nProduct ID already exists.")
+
+            except ValueError:
+                print("\nError: Price and stock must be valid numbers.")
+
+        # Option 3 - Update stock
+        elif option == "3":
+
+            print("\nUpdate Stock")
+
+            product_id = input("Enter Product ID: ")
+
+            product = search_product(inventory, product_id)
+
+            if product is None:
+                print("\nProduct not found.")
+
+            else:
+                print("\nProduct Found:")
+                print("Name:", product["name"])
+                print("Current Stock:", product["stock"])
+
+                try:
+                    new_stock = int(input("\nNew Stock Quantity: "))
+
+                    updated = update_stock(
+                        inventory,
+                        product_id,
+                        new_stock
+                    )
+
+                    if updated:
+                        print("\nStock updated successfully!")
+
+                except ValueError:
+                    print("\nError: Stock quantity must be an integer.")
+
+        # Option 4 - Search product
+        elif option == "4":
+
+            print("\nSearch Product")
+
+            product_id = input("Enter Product ID: ")
+
+            product = search_product(inventory, product_id)
+
+            if product is None:
+                print("\nProduct not found.")
+
+            else:
+                print("\nProduct Found")
+                print("------------------------------------------------")
+                print("ID:", product["id"])
+                print("Name:", product["name"])
+                print(f'Price: ${product["price"]:.2f}')
+                print("Stock:", product["stock"])
+                print("------------------------------------------------")
+
+        # Option 5 - Save inventory
+        elif option == "5":
+
+            print("\nSaving inventory...")
+
+            save_inventory(inventory)
+
+            print("Inventory saved successfully to inventory.json.")
+
+        # Option 6 - Exit
+        elif option == "6":
+
+            print("\nSaving inventory before exit...")
+
+            save_inventory(inventory)
+
+            print("Inventory saved successfully.")
+            print("\nThank you for using Inventory Management System.")
+            print("Program terminated.")
+
+            exit_program = True
+
+        else:
+            print("\nInvalid option. Please enter a number from 1 to 6.")
+
+
+# Program Entry Point
+if __name__ == "__main__":
+    main()
