@@ -1,0 +1,18 @@
+[
+    {
+        "id": "P101",
+        "name": "Acoustic Guitar",
+        "price": 149.0,
+        "stock": 8,
+        "type": "physical",
+        "weight": 3.5
+    },
+    {
+        "id": "D101",
+        "name": "Guitar Lesson Download",
+        "price": 12.0,
+        "stock": 25,
+        "type": "digital",
+        "download_size": 240.0
+    }
+]
