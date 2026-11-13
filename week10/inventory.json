@@ -1,0 +1,41 @@
+[
+    {
+        "id": "P101",
+        "name": "Acoustic Guitar",
+        "price": 149.0,
+        "stock": 8,
+        "supplier": {
+            "supplier_id": "S101",
+            "name": "Music Supplies",
+            "contact_email": "sales@example.com"
+        },
+        "type": "physical",
+        "weight": 3.5
+    },
+    {
+        "id": "D101",
+        "name": "Guitar Lesson Download",
+        "price": 12.0,
+        "stock": 25,
+        "supplier": {
+            "supplier_id": "S101",
+            "name": "Music Supplies",
+            "contact_email": "sales@example.com"
+        },
+        "type": "digital",
+        "download_size": 240.0
+    },
+    {
+        "id": "C101",
+        "name": "Chicken Feet",
+        "price": 10.0,
+        "stock": 211,
+        "supplier": {
+            "supplier_id": "S102",
+            "name": "Chicken Inc.",
+            "contact_email": "chickeninc@mail.com"
+        },
+        "type": "physical",
+        "weight": 99.0
+    }
+]
